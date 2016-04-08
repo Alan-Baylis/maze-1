@@ -8,11 +8,17 @@ public class Game {
 
 	public int PathWidth;
 
-	public Game (int x, int y, int z, int pathWidth) {
+	public float MaxDistance;
+
+	public float BlockScale;
+
+	public Game (int x, int y, int z, int pathWidth, float maxDistance, float blockScale) {
 		this.PlaneWidth = x;
 		this.PlaneHeight = y;
 		this.PlaneDepth = z;
 		this.PathWidth = pathWidth;
+		this.MaxDistance = maxDistance;
+		this.BlockScale = blockScale;
 	}
 
 	public int MaxDimension (Axis axis) {
