@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class UIManager : MonoBehaviour {
@@ -7,9 +8,16 @@ public class UIManager : MonoBehaviour {
 
 	public string countText = "Coins: ";
 
+	public GameObject WinScreen;
+
 	void Awake () {
 		_goldText = GetComponentInChildren<Text>();
 		subscribeEvents();
+	}
+
+
+	void OnDestroy () {
+		unsubscribeEvents();
 	}
 
 	void subscribeEvents () {
@@ -23,6 +31,8 @@ public class UIManager : MonoBehaviour {
 	void handleNamedEvent (string eventName) {
 		if (eventName == Events.CoinCollected) {
 			collectCoin();
+		} else if (eventName == Events.GameWon) {
+			showWinScreen();
 		}
 	}
 
@@ -34,5 +44,19 @@ public class UIManager : MonoBehaviour {
 
 	void updateCoinText () {
 		_goldText.text = countText + GameManager.Game.CoinsCollected;
+	}
+
+	void Update () {
+		if (Input.GetKeyDown(KeyCode.Space) && WinScreen.activeSelf) {
+			Restart();
+		}
+	}
+
+	void showWinScreen () {
+		WinScreen.SetActive(true);
+	}
+
+	public void Restart () {
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 }

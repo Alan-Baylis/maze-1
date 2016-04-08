@@ -13,14 +13,24 @@ public class Game {
 	public float BlockScale;
 
 	public int CoinsCollected = 0;
+	public int CoinsToWin = 30;
 
-	public Game (int x, int y, int z, int pathWidth, float maxDistance, float blockScale) {
+	public Game (int x, int y, int z, int pathWidth, float maxDistance, float blockScale, int coinsToWin) {
 		this.PlaneWidth = x;
 		this.PlaneHeight = y;
 		this.PlaneDepth = z;
 		this.PathWidth = pathWidth;
 		this.MaxDistance = maxDistance;
 		this.BlockScale = blockScale;
+		this.CoinsToWin = coinsToWin;
+	}
+
+	public float PercentToVictory () {
+		return (float) CoinsCollected / (float) CoinsToWin;
+	}
+
+	public void Reset () {
+		CoinsCollected = 0;
 	}
 
 	public int MaxDimension (Axis axis) {

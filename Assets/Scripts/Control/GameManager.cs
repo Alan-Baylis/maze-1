@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour {
 	public int PathWidth = 5;
 	public float MaximumDistance = 10000;
 	public float BlockScale = 1;
+	public int CoinsToWin = 30;
 
 	Game currentGame;
 
@@ -42,10 +43,18 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void init () {
-		currentGame = new Game(PlaneWidth, PlaneHeight, PlaneDepth, PathWidth, MaximumDistance, BlockScale);
+		currentGame = new Game(PlaneWidth, PlaneHeight, PlaneDepth, PathWidth, MaximumDistance, BlockScale, CoinsToWin);
 	}
 
 	public static void CollectCoin () {
 		Game.CoinsCollected++;
+		Instance.checkForWin();
+		Game.Reset();
+	}
+
+	void checkForWin () {
+		if (currentGame.CoinsCollected >= currentGame.CoinsToWin) {
+			EventController.Event(Events.GameWon);
+		}
 	}
 }
