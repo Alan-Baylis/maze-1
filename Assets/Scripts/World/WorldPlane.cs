@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class WorldPlane : MonoBehaviour {
+	public static float PlaneSize = 100;
+	public static int PlanesAwayLoadOutCount = 3;
+
 	public bool ShouldSpawnBlocks = true;
 
 	public WorldPlane North;
@@ -70,8 +73,129 @@ public class WorldPlane : MonoBehaviour {
 
 	void OnCollisionEnter(Collision collision) {
 		if (collision.gameObject.tag == "Player") {
+			checkDirections();
+			checkAllDirectionsForLoadOut();
+		}
+	}
 
-			Debug.Log("Collided with " + gameObject.name);
+	void checkDirections () {
+		if (North == null) {
+			spawnNewPlane(Direction.North);
+		}
+
+		if (South == null) {
+			spawnNewPlane(Direction.South);
+		}
+
+		if (East == null) {
+			spawnNewPlane(Direction.East);
+		}
+
+		if (West == null) {
+			spawnNewPlane(Direction.West);
+		}
+	}
+
+	void spawnNewPlane (Direction direction) {
+		GameObject planeObject = (GameObject) Instantiate(GameManager.PlanePrefab, transform.position + getOffset(direction), Quaternion.identity);
+		WorldPlane plane = planeObject.GetComponent<WorldPlane>();
+
+		setPlaneByDirection(direction, plane);
+		plane.setPlaneByDirection(DirectionUtil.Reverse(direction), this);
+
+		checkPerpendiculars(plane, direction);
+	}
+
+	void checkPerpendiculars (WorldPlane plane, Direction direction) {
+		Direction[] directionsToCheck = DirectionUtil.Perpendiculars(direction);
+
+		for (int i = 0; i < directionsToCheck.Length; i++) {
+			WorldPlane targetPlane = getPlaneByDirection(directionsToCheck[i]);
+			if (targetPlane != null) {
+				targetPlane.setPlaneByDirection(direction, plane);
+				plane.setPlaneByDirection(DirectionUtil.Reverse(direction), targetPlane);
+			}
+		}
+	}
+
+	WorldPlane getPlaneByDirection (Direction direction) {
+		switch (direction) {
+
+		case Direction.North:
+			return North;
+
+		case Direction.South:
+			return South;
+
+		case Direction.East:
+			return East;
+
+		case Direction.West:
+			return West;
+
+		default:
+			return null;
+		}
+	}
+
+	void setPlaneByDirection (Direction direction, WorldPlane plane) {
+		switch (direction) {
+
+		case Direction.North:
+			North = plane;
+			break;
+
+		case Direction.South:
+			South = plane;
+			break;
+
+		case Direction.East:
+			East = plane;
+			break;
+
+		case Direction.West:
+			West = plane;
+			break;
+
+		}
+	}
+
+	void checkAllDirectionsForLoadOut () {
+		checkForLoadOut(Direction.North);
+		checkForLoadOut(Direction.South);
+		checkForLoadOut(Direction.East);
+		checkForLoadOut(Direction.West);
+	}
+
+	void checkForLoadOut (Direction direction, int planesAwayFromPlayer = 0) {
+		if (planesAwayFromPlayer >= PlanesAwayLoadOutCount) {
+			Destroy(gameObject);
+			return;
+		}
+
+		if (getPlaneByDirection(direction) != null) {
+			getPlaneByDirection(direction).checkForLoadOut(direction, planesAwayFromPlayer + 1);
+		}
+	}
+
+	Vector3 getOffset (Direction direction) {
+		switch (direction) {
+
+		case Direction.North:
+			return new Vector3(0, 0, -PlaneSize);
+
+		case Direction.South:
+			return new Vector3(0, 0, PlaneSize);
+
+		case Direction.East:
+			return new Vector3(-PlaneSize, 0, 0);
+
+		case Direction.West:
+			return new Vector3(-PlaneSize, 0, 0);
+
+		default:
+			return Vector3.zero;
+			
 		}
 	}
 }
