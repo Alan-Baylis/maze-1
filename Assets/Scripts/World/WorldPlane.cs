@@ -35,7 +35,8 @@ public class WorldPlane : MonoBehaviour {
 		GameObject block;
 		if (type == BlockType.Cube) {
 			block =  GameObject.CreatePrimitive(PrimitiveType.Cube);
-			block.transform.localPosition = getBlockPosition(x, y, z);
+			block.transform.SetParent(transform);
+			block.transform.position = getBlockPosition(x, y, z);
 		}
 	}
 

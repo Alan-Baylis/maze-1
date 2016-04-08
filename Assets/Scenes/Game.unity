@@ -113,8 +113,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlaneWidth: 100
-  PlaneHeight: 10
+  PlaneHeight: 5
   PlaneDepth: 100
+  PathWidth: 5
 --- !u!4 &42647859
 Transform:
   m_ObjectHideFlags: 0
@@ -172,7 +173,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100006, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 2}
