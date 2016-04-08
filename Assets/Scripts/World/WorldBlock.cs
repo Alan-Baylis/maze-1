@@ -12,4 +12,8 @@ public class WorldBlock {
 	public BlockType Type () {
 		return _type;
 	}
+
+	public void SetType (BlockType type) {
+		this._type = type;
+	}
 }

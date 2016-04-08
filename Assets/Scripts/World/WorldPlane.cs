@@ -11,9 +11,9 @@ public class WorldPlane : MonoBehaviour {
 	
 	void spawnBlocks () {
 
-		int width = GameManager.CurrentGame().PlaneWidth;
-		int length = GameManager.CurrentGame().PlaneLength;
-		int height = GameManager.CurrentGame().PlaneHeight;
+		int width = GameManager.Game.PlaneWidth;
+		int length = GameManager.Game.PlaneHeight;
+		int height = GameManager.Game.PlaneDepth;
 
 
 		for (int x = 0; x < width; x++) {
@@ -35,7 +35,15 @@ public class WorldPlane : MonoBehaviour {
 		GameObject block;
 		if (type == BlockType.Cube) {
 			block =  GameObject.CreatePrimitive(PrimitiveType.Cube);
-			block.transform.localPosition = new Vector3(x, y, z);
+			block.transform.localPosition = getBlockPosition(x, y, z);
 		}
+	}
+
+	Vector3 getBlockPosition (int x, int y, int z) {
+		return new Vector3(
+			x - GameManager.Game.PlaneWidth/2, 
+			y, 
+			z - GameManager.Game.PlaneDepth/2
+		);
 	}
 }

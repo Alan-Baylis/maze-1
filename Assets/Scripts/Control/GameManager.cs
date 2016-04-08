@@ -4,9 +4,16 @@ using System.Collections;
 public class GameManager : MonoBehaviour {
 	public static GameManager Instance;
 
+	public static Game Game {
+		get {
+			return Instance.currentGame;
+		}
+	}
+
 	public int PlaneWidth = 100;
-	public int PlaneLength = 100;
-	public int PlaneHeight = 10;
+	public int PlaneHeight = 100;
+	public int PlaneDepth = 10;
+	public int PathWidth = 5;
 
 	Game currentGame;
 
@@ -16,16 +23,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-
 	void init () {
-		currentGame = new Game(PlaneWidth, PlaneLength, PlaneHeight);
-	}
-
-	public static Game CurrentGame () {
-		return Instance.currentGame;
+		currentGame = new Game(PlaneWidth, PlaneHeight, PlaneDepth, PathWidth);
 	}
 }
