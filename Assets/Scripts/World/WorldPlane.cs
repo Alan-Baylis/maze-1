@@ -42,9 +42,9 @@ public class WorldPlane : MonoBehaviour {
 
 	Vector3 getBlockPosition (int x, int y, int z) {
 		return new Vector3(
-			x - GameManager.Game.PlaneWidth/2, 
-			y, 
-			z - GameManager.Game.PlaneDepth/2
+			(x - GameManager.Game.PlaneWidth/2 + transform.position.x),
+			(y), 
+			(z - GameManager.Game.PlaneDepth/2 + transform.position.z)
 		);
 	}
 }
