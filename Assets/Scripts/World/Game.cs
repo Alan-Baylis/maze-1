@@ -12,6 +12,8 @@ public class Game {
 
 	public float BlockScale;
 
+	public int CoinsCollected = 0;
+
 	public Game (int x, int y, int z, int pathWidth, float maxDistance, float blockScale) {
 		this.PlaneWidth = x;
 		this.PlaneHeight = y;

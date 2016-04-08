@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
+using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WorldPlane : MonoBehaviour {
 	public static float PlaneSize = 100;
 	public static int PlanesAwayLoadOutCount = 3;
+	public static int TotalLoadCount = 0;
+	public static int MaximumLoadDifference = 8;
 
 	public bool ShouldSpawnBlocks = true;
+
+	static List<WorldPlane> allPlanes = new List<WorldPlane>();
 
 	public WorldPlane North;
 	public WorldPlane South;
@@ -13,6 +19,8 @@ public class WorldPlane : MonoBehaviour {
 	public WorldPlane West;
 
 	WorldBlock[,,] blocks;
+
+	int loadCount;
 
 	void Start () {
 		init();
@@ -35,6 +43,9 @@ public class WorldPlane : MonoBehaviour {
 
 	void init () {
 		blocks = new BlockGenerator().Generate();
+		loadCount = TotalLoadCount++;
+
+		allPlanes.Add(this);
 
 		if (ShouldSpawnBlocks) {
 			spawnBlocks();
@@ -42,13 +53,22 @@ public class WorldPlane : MonoBehaviour {
 	}
 
 	void spawnBlock (BlockType type, int x, int y, int z) {
-		GameObject block;
-		if (type == BlockType.Cube) {
-			block =  GameObject.CreatePrimitive(PrimitiveType.Cube);
+		GameObject block = null;
+		if (type == BlockType.Cube || type == BlockType.Coin) {
+			if (type == BlockType.Cube) {
+				block =  GameObject.CreatePrimitive(PrimitiveType.Cube);
+			} else if (type == BlockType.Coin) {
+				block = (GameObject) Instantiate(GameManager.Instance.CoinPrefab);
+			}
+
 			block.transform.SetParent(transform);
-			block.transform.localScale *= GameManager.Game.BlockScale;
+			if (type == BlockType.Cube) {
+				block.transform.localScale *= GameManager.Game.BlockScale;
+			}
 			block.transform.localPosition = getBlockPosition(x, y, z);
-			block.GetComponent<Renderer>().material.color = color(block.transform.position);
+			if (type == BlockType.Cube) {
+				block.GetComponent<Renderer>().material.color = color(block.transform.position);
+			}
 		}
 	}
 
@@ -75,6 +95,7 @@ public class WorldPlane : MonoBehaviour {
 		if (collision.gameObject.tag == "Player") {
 			checkDirections();
 			checkAllDirectionsForLoadOut();
+			checkLoadCounts();
 		}
 	}
 
@@ -96,17 +117,19 @@ public class WorldPlane : MonoBehaviour {
 		}
 	}
 
-	void spawnNewPlane (Direction direction) {
+	void spawnNewPlane (Direction direction, bool recurse = true) {
 		GameObject planeObject = (GameObject) Instantiate(GameManager.PlanePrefab, transform.position + getOffset(direction), Quaternion.identity);
+		planeObject.name = gameObject.name + direction.ToString();
+		planeObject.transform.SetParent(GameManager.World.transform);
 		WorldPlane plane = planeObject.GetComponent<WorldPlane>();
 
 		setPlaneByDirection(direction, plane);
 		plane.setPlaneByDirection(DirectionUtil.Reverse(direction), this);
 
-		checkPerpendiculars(plane, direction);
+		checkPerpendiculars(plane, direction, recurse);
 	}
 
-	void checkPerpendiculars (WorldPlane plane, Direction direction) {
+	void checkPerpendiculars (WorldPlane plane, Direction direction, bool recurse = true) {
 		Direction[] directionsToCheck = DirectionUtil.Perpendiculars(direction);
 
 		for (int i = 0; i < directionsToCheck.Length; i++) {
@@ -114,6 +137,9 @@ public class WorldPlane : MonoBehaviour {
 			if (targetPlane != null) {
 				targetPlane.setPlaneByDirection(direction, plane);
 				plane.setPlaneByDirection(DirectionUtil.Reverse(direction), targetPlane);
+				if (recurse) {
+					targetPlane.spawnNewPlane(direction, false);
+				}
 			}
 		}
 	}
@@ -160,6 +186,17 @@ public class WorldPlane : MonoBehaviour {
 		}
 	}
 
+	void checkLoadCounts () {
+		List<WorldPlane> toDelete = allPlanes.FindAll(i => loadCount - i.loadCount > MaximumLoadDifference);
+		allPlanes.RemoveAll(i => loadCount - i.loadCount > MaximumLoadDifference);
+
+		foreach (WorldPlane plane in toDelete) {
+			if (plane != null && plane.gameObject != null) {
+				Destroy(plane.gameObject);
+			}
+		}
+	}
+
 	void checkAllDirectionsForLoadOut () {
 		checkForLoadOut(Direction.North);
 		checkForLoadOut(Direction.South);
@@ -168,6 +205,7 @@ public class WorldPlane : MonoBehaviour {
 	}
 
 	void checkForLoadOut (Direction direction, int planesAwayFromPlayer = 0) {
+
 		if (planesAwayFromPlayer >= PlanesAwayLoadOutCount) {
 			Destroy(gameObject);
 			return;
@@ -191,7 +229,7 @@ public class WorldPlane : MonoBehaviour {
 			return new Vector3(-PlaneSize, 0, 0);
 
 		case Direction.West:
-			return new Vector3(-PlaneSize, 0, 0);
+			return new Vector3(PlaneSize, 0, 0);
 
 		default:
 			return Vector3.zero;

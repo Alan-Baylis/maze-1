@@ -54,9 +54,12 @@ public class BlockGenerator {
 
 	public virtual WorldBlock GetBlock (params object [] args) {
 		BlockType blockType;
-
-		if (Random.Range(0, 20) < 2) {
+		int odds = 20;
+		int coinOdds = 100;
+		if (Random.Range(0, odds) < 2) {
 			blockType = BlockType.Cube;	
+		} else if (Random.Range(0, coinOdds) == 5){
+			blockType = BlockType.Coin;
 		} else {
 			blockType = BlockType.Empty;
 		}

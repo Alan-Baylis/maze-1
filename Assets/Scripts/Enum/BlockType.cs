@@ -1,5 +1,6 @@
 ﻿
 public enum BlockType {
 	Cube,
-	Empty
+	Empty,
+	Coin
 }

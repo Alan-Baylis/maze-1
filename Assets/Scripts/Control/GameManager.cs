@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public GameObject WorldPlanePrefab;
+	public GameObject CoinPrefab;
 	public GameObject WorldParent;
 
 	public int PlaneWidth = 100;
@@ -44,9 +45,7 @@ public class GameManager : MonoBehaviour {
 		currentGame = new Game(PlaneWidth, PlaneHeight, PlaneDepth, PathWidth, MaximumDistance, BlockScale);
 	}
 
-	void Update () {
-		if (Input.GetKeyDown(KeyCode.R)) {
-			GameObject.FindGameObjectWithTag("Player").SetActive(false);
-		}
+	public static void CollectCoin () {
+		Game.CoinsCollected++;
 	}
 }
