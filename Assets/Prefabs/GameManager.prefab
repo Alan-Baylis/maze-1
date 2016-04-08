@@ -39,13 +39,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44f71e03c8ce448f58f0669a8e5ab558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WorldPlanePrefab: {fileID: 0}
+  WorldPlanePrefab: {fileID: 133072, guid: cfb72fbab8c7745be9d5bdaea41cb5c7, type: 2}
+  CoinPrefab: {fileID: 113110, guid: e8ba7ec80f16049e0a5cac67ef01df89, type: 2}
+  WorldParent: {fileID: 0}
   PlaneWidth: 100
-  PlaneHeight: 30
+  PlaneHeight: 15
   PlaneDepth: 100
   PathWidth: 1
   MaximumDistance: 200
   BlockScale: 5
+  CoinsToWin: 30
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

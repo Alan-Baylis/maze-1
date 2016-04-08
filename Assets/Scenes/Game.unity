@@ -829,6 +829,10 @@ Prefab:
       propertyPath: movementSettings.BackwardSpeed
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 11400004, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 2}
+      propertyPath: movementSettings.JumpForce
+      value: 100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 2}
   m_IsPrefabParent: 0
@@ -947,7 +951,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 6
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 0, g: 0.6313726, b: 0.7960785, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -1033,27 +1037,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 423378, guid: c9933a3130e604dbd85236b227c52aef, type: 2}
       propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11486788, guid: c9933a3130e604dbd85236b227c52aef, type: 2}
-      propertyPath: WorldPlanePrefab
-      value: 
-      objectReference: {fileID: 133072, guid: cfb72fbab8c7745be9d5bdaea41cb5c7, type: 2}
-    - target: {fileID: 11486788, guid: c9933a3130e604dbd85236b227c52aef, type: 2}
-      propertyPath: PlaneHeight
-      value: 15
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11486788, guid: c9933a3130e604dbd85236b227c52aef, type: 2}
       propertyPath: WorldParent
       value: 
       objectReference: {fileID: 525435898}
     - target: {fileID: 11486788, guid: c9933a3130e604dbd85236b227c52aef, type: 2}
-      propertyPath: CoinPrefab
-      value: 
-      objectReference: {fileID: 113110, guid: e8ba7ec80f16049e0a5cac67ef01df89, type: 2}
-    - target: {fileID: 11486788, guid: c9933a3130e604dbd85236b227c52aef, type: 2}
-      propertyPath: CoinsToWin
-      value: 1
+      propertyPath: PlaneHeight
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c9933a3130e604dbd85236b227c52aef, type: 2}
@@ -1751,7 +1743,7 @@ Transform:
   m_GameObject: {fileID: 1667330806}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 9.833328}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 525435899}
   m_RootOrder: 0

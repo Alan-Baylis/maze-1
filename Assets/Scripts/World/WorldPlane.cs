@@ -10,7 +10,8 @@ public class WorldPlane : MonoBehaviour {
 	public static int MaximumLoadDifference = 8;
 
 	public bool ShouldSpawnBlocks = true;
-
+	public bool SpawnBlocksAsync = true;
+	public int LoadsPerFrame = 5;
 	static List<WorldPlane> allPlanes = new List<WorldPlane>();
 
 	public WorldPlane North;
@@ -21,6 +22,8 @@ public class WorldPlane : MonoBehaviour {
 	WorldBlock[,,] blocks;
 
 	int loadCount;
+
+	bool isPlayerStandingOnPlane = false;
 
 	void Start () {
 		init();
@@ -41,6 +44,27 @@ public class WorldPlane : MonoBehaviour {
 		}
 	}
 
+	IEnumerator spawnBlocksCoroutine () {
+		int width = GameManager.Game.PlaneWidth/(int)GameManager.Game.BlockScale;
+		int length = GameManager.Game.PlaneHeight/(int)GameManager.Game.BlockScale;
+		int height = GameManager.Game.PlaneDepth/(int)GameManager.Game.BlockScale;
+		int loadsSinceLastFrame = 0;
+
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < length; y++) {
+				for (int z = 0; z < height; z++) {
+					spawnBlock(blocks[x, y, z].Type(), x, y, z);
+					loadsSinceLastFrame++;
+
+					if (loadsSinceLastFrame >= LoadsPerFrame) {
+						loadsSinceLastFrame = 0;
+						yield return new WaitForEndOfFrame();
+					}
+				}
+			}
+		}
+	}
+
 	void init () {
 		blocks = new BlockGenerator().Generate();
 		loadCount = TotalLoadCount++;
@@ -48,7 +72,11 @@ public class WorldPlane : MonoBehaviour {
 		allPlanes.Add(this);
 
 		if (ShouldSpawnBlocks) {
-			spawnBlocks();
+			if (SpawnBlocksAsync) {
+				StartCoroutine(spawnBlocksCoroutine());
+			} else {
+				spawnBlocks();
+			}
 		}
 	}
 
@@ -96,6 +124,13 @@ public class WorldPlane : MonoBehaviour {
 			checkDirections();
 			checkAllDirectionsForLoadOut();
 			checkLoadCounts();
+			isPlayerStandingOnPlane = true;
+		}
+	}
+
+	void OnCollisionExit (Collision collision) {
+		if (collision.gameObject.tag == "Player") {
+			isPlayerStandingOnPlane = false;
 		}
 	}
 
@@ -192,8 +227,14 @@ public class WorldPlane : MonoBehaviour {
 
 		foreach (WorldPlane plane in toDelete) {
 			if (plane != null && plane.gameObject != null) {
-				Destroy(plane.gameObject);
+				plane.requestDestroy();
 			}
+		}
+	}
+
+	void requestDestroy () {
+		if (!isPlayerStandingOnPlane) {
+			Destroy(gameObject);
 		}
 	}
 
@@ -207,7 +248,7 @@ public class WorldPlane : MonoBehaviour {
 	void checkForLoadOut (Direction direction, int planesAwayFromPlayer = 0) {
 
 		if (planesAwayFromPlayer >= PlanesAwayLoadOutCount) {
-			Destroy(gameObject);
+			requestDestroy();
 			return;
 		}
 

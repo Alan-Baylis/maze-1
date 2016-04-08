@@ -49,12 +49,12 @@ public class GameManager : MonoBehaviour {
 	public static void CollectCoin () {
 		Game.CoinsCollected++;
 		Instance.checkForWin();
-		Game.Reset();
 	}
 
 	void checkForWin () {
 		if (currentGame.CoinsCollected >= currentGame.CoinsToWin) {
 			EventController.Event(Events.GameWon);
+			Game.Reset();
 		}
 	}
 }
